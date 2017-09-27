@@ -3,7 +3,6 @@
 <head>
     <style>
         .subMenu {
-            margin-left: 10px;
             font-size: smaller;
         }
     </style>
@@ -31,7 +30,7 @@
             var menuItemRight = new MenuItem('right', 'Правый пункт');
             
             var menu = new Menu('menu', 'menu', [menuItem1, [menuItem2, catalogMenu], menuItem3, menuItem4, menuItem5, menuItem6, menuItem7, menuItemLeft, menuItemRight]);
-            document.write(menu.render());
+            document.getElementsByTagName('body')[0].appendChild(menu.render());
             menuItemRight.remove();
         }
 

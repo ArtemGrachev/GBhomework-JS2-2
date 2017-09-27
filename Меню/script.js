@@ -1,80 +1,85 @@
-/*jslint plusplus: true, devel: true, eqeq: true */
 'use strict';
-var dataOrder = 0;
-function Container() {
-    this.deleted = false;
-    this.id = "";
-    this.className = "";
+function Container(myTag, myId, myClass) {
+    this.id = myId;
+    this.className = myClass;
     this.htmlCode = "";
+    this.elem = document.createElement((myTag) ? myTag : 'div');
 }
-Container.prototype.renderExisting = function () {
-    return this.htmlCode;
-};
 Container.prototype.render = function () {
-    return (this.deleted == false) ? this.renderExisting() : '';
-};
-Container.prototype.remove = function () {
-    this.deleted = true;
-    if (this.selectThis()) {
-        this.selectThis().parentNode.removeChild(this.selectThis());
+    if (this.elem) {
+        if (this.id) {
+            this.elem.id = this.id;
+        }
+        if (this.className) {
+            this.elem.className = this.className;
+        }
+        this.innerHTML = this.htmlCode;
+        return this.elem;
     }
+    return false;
+};
+
+Container.prototype.remove = function () {
+    if (this.elem.parentNode) {
+        this.elem.parentNode.removeChild(this.elem);
+    }
+    this.elem = null;
 };
 
 function Menu(myId, myClass, myItems) {
-    Container.call(this);
-    this.order = dataOrder++;
-    this.id = myId;
-    this.className = myClass;
+    Container.call(this, 'ul', myId, myClass);
     this.items = myItems;
 }
 Menu.prototype = Object.create(Container.prototype);
 Menu.prototype.constructor = Menu;
-Menu.prototype.renderExisting = function () {
-    var result = (this.id && this.id != '') ? '<ul class="' + this.className + '" id="' + this.id + '">' : '<ul class="' + this.className + '" data-order="' + dataOrder++ + '">',
-        i;
-    for (i = 0; i < this.items.length; i++) {
-        if ((this.items[i] instanceof MenuItem) || (this.items[i] instanceof SubMenu)) {
-            this.items[i].menu = this.selectThis();
-            result += this.items[i].render();
+Menu.prototype.render = function () {
+    if (this.elem) {
+        var i,
+            compileItem;
+        this.elem = document.createElement('ul');
+        if (this.id) {
+            this.elem.id = this.id;
         }
+        this.elem.className = this.className;
+        for (i = 0; i < this.items.length; i++) {
+            if ((typeof this.items[i] == 'object') &&
+                (this.items[i][0] instanceof MenuItem) &&
+                (this.items[i][1] instanceof Menu))
+            {
+                if (this.items[i][0].render()) {
+                    compileItem = this.items[i][0].render();
+                }
+                if (this.items[i][1].render()) {
+                    compileItem.appendChild(this.items[i][1].render());
+                }
+                this.elem.appendChild(compileItem);
+            } else if (this.items[i] instanceof MenuItem) {
+                if (this.items[i].render()) {
+                    this.elem.appendChild(this.items[i].render());
+                }
+            }
+        }
+        return this.elem;
     }
-    result += '</ul>';
-    return result;
-};
-Menu.prototype.selectThis = function () {
-    return (this.id && this.id != '') ? document.getElementById(this.id) : document.querySelector('[data-order="' + this.order + '"]');
+    return false;
 };
 
 function MenuItem(myHref, myLabel) {
-    Container.call(this);
-    this.className = 'menu-item';
+    Container.call(this, 'li', '', 'menu-item');
     this.href = myHref;
-    this.label = myLabel;
+    this.htmlCode = myLabel;
 }
 MenuItem.prototype = Object.create(Container.prototype);
 MenuItem.prototype.constructor = MenuItem;
-MenuItem.prototype.renderExisting = function () {
-    return '<li class="' + this.className + '"><a href="' + this.href + '" >' + this.label + '</a></li>';
-};
-MenuItem.prototype.selectThis = function () {
-    return (this.menu && this.menu != '') ? this.menu.querySelector('[href="' + this.href + '"]') : document.querySelector('[href="' + this.href + '"]');
-};
-
-function SubMenu(myHref, myLabel, myId, myClass, myItems) {
-    Container.call(this);
-    this.className = 'menu-item';
-    this.href = myHref;
-    this.label = myLabel;
-    this.menuId = myId;
-    this.menuClassName = myClass;
-    this.menuItems = myItems;
-}
-SubMenu.prototype = Object.create(Container.prototype);
-SubMenu.prototype.constructor = SubMenu;
-SubMenu.prototype.renderExisting = function () {
-    var writeSubMenu = new Menu(this.menuId, this.menuClassName, this.menuItems);
-    return '<li class="' + this.className + '"><a href="' + this.href + '" >' + this.label + '</a>' + writeSubMenu.render() + '</li>';
-};
-SubMenu.prototype.selectThis = function () {
-    return (this.menu && this.menu != '') ? this.menu.querySelector('[href="' + this.href + '"]') : document.querySelector('[href="' + this.href + '"]');
+MenuItem.prototype.render = function () {
+    if (this.elem) {
+        var elemA = document.createElement('a');
+        elemA.setAttribute('href', this.href);
+        elemA.innerHTML = this.htmlCode;
+        this.elem = document.createElement('li');
+        this.elem.className = this.className;
+        this.elem.appendChild(elemA);
+        return this.elem;
+    }
+    return false;
 };
