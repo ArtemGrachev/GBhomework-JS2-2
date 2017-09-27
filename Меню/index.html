@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <style>
+        .subMenu {
+            margin-left: 10px;
+            font-size: smaller;
+        }
+    </style>
+    <script src="script.js"></script>
+    <script>
+        window.onload = function() {
+            var menuItem1 = new MenuItem('home.html', 'Главная');
+            
+            var catalogItem1 = new MenuItem('catalog/clothes.html', 'Одежда');
+            var catalogItem2 = new MenuItem('catalog/for-home.html', 'Для дома');
+            var catalogItem3 = new MenuItem('catalog/tricks.html', 'Приколы');
+            var catalogItem4 = new MenuItem('catalog/electronics.html', 'Электроника');
+            var catalogMenu = new Menu('', 'subMenu', [catalogItem1, catalogItem2, catalogItem3, catalogItem4]);
+            
+            
+            var menuItem2 = new MenuItem('catalog.html', 'Каталог');
+            var menuItem3 = new MenuItem('about.html', 'О магазине');
+            var menuItem4 = new MenuItem('sale.html', 'Распродажа');
+            var menuItem5 = new MenuItem('brands.html', 'Бренды');
+            var menuItem6 = new MenuItem('blog.html', 'Блог');
+            var menuItem7 = new MenuItem('contacts.html', 'Контакты');
+            
+            var menuItemLeft = new MenuItem('left', 'Левый пункт');
+            menuItemLeft.remove();
+            var menuItemRight = new MenuItem('right', 'Правый пункт');
+            
+            var menu = new Menu('menu', 'menu', [menuItem1, [menuItem2, catalogMenu], menuItem3, menuItem4, menuItem5, menuItem6, menuItem7, menuItemLeft, menuItemRight]);
+            document.write(menu.render());
+            menuItemRight.remove();
+        }
+
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
