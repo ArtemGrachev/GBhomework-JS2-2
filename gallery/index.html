@@ -1,35 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Галлерея обоев с красивыми пейзажами</title>
     <style>
+        @font-face {
+            font-family: 'fontello';
+            src: url('./font/fontello.eot?32521619');
+            src: url('./font/fontello.eot?32521619#iefix') format('embedded-opentype'),
+            url('./font/fontello.woff?32521619') format('woff'),
+            url('./font/fontello.ttf?32521619') format('truetype'),
+            url('./font/fontello.svg?32521619#fontello') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .demo-icon {
+            font-family: "fontello";
+            font-style: normal;
+            font-weight: normal;
+            speak: none;
+            display: inline-block;
+            width: 1em;
+            margin-right: .2em;
+            text-align: center;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1em;
+            margin-left: .2em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 30px;
+            color: blue;
+        }
+        
+        .spinner {
+            text-align: center;
+            height: 50px;
+        }
+
         h1 {
             text-align: center;
         }
+
         .gallery {
             width: 100%;
-            flex-direction:row;
-            flex-wrap:wrap;
-            justify-content:space-around;
-            align-items:flex-start;
-            align-content:flex-start;
-            display:flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-start;
+            align-content: flex-start;
+            display: flex;
         }
+
         .gallery__img {
             display: block;
             max-width: 45%;
-            flex-grow:0;
-            flex-shrink:0;
+            flex-grow: 0;
+            flex-shrink: 0;
             box-sizing: border-box;
             padding: 10px;
         }
+
         .gallery__img:hover {
-           cursor: pointer;
+            cursor: pointer;
         }
+
         .popup {
             height: 100%;
-            background:url(img/popupBG.png);
+            background: url(img/popupBG.png);
             position: fixed;
             width: 100%;
             z-index: 100;
@@ -37,9 +77,11 @@
             left: 0;
             text-align: center;
         }
+
         .popup:hover {
-           cursor: pointer;
+            cursor: pointer;
         }
+
         .popup__img {
             max-height: 95%;
             max-width: 95%;
@@ -47,19 +89,27 @@
             opacity: 1;
             display: inline-block;
         }
+
         .popup__close {
             position: fixed;
             top: 2px;
             right: 2px;
         }
+
         .popup__close:hover {
-           cursor: pointer;
+            cursor: pointer;
         }
+
     </style>
+    <link rel="stylesheet" href="css/animation.css">
 </head>
+
 <body>
     <h1>Галлерея обоев с красивыми пейзажами</h1>
     <div class="gallery"></div>
-<script src="script.js"></script>
+    <div class="spinner"></div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
