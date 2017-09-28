@@ -1,4 +1,5 @@
 window.onload = function() {
+    'use strict';
     function CreateRequest() {
         var Request = false;
         if (window.XMLHttpRequest) {
@@ -48,35 +49,93 @@ window.onload = function() {
             Request.send(null);
         }
     }
-    function closePopUp() {
-        event.preventDefault();
-        var closing = document.getElementsByClassName('popup')[0];
-        closing.parentElement.removeChild(closing);
+    // Универсальный класс создания тега
+    function Container(myTag, myChildren, myClass, myAttributes, myOptions) {
+        this.elem = document.createElement((myTag) ? myTag : 'div');
+        if (myChildren instanceof Array) {
+            this.cChildren = myChildren;
+        } else if (myChildren) {
+            throw new Error("Во втором аргументе Container (myChildren) должен быть массив.")
+        } else {
+            this.cChildren = [];
+        }
+        this.cClassName = myClass;
+        if (myAttributes instanceof Object) {
+            this.cAttributes = myAttributes;
+        } else if (myAttributes) {
+            throw new Error("В четвёртом аргументе Container (myAttributes) должен быть объект.")
+        } else {
+            this.cAttributes = {};
+        }
+        if (myOptions instanceof Object) {
+            this.cOptions = myOptions;
+        } else if (myOptions) {
+            throw new Error("В пятом аргументе Container (myOptions) должен быть объект.")
+        } else {
+            this.cOptions = {};
+        }
     }
+    Container.prototype.render = function () {
+        if (this.elem) {
+            var that = this;
+            this.cChildren.forEach(function (child) {
+                if (child instanceof Container) {
+                    that.elem.appendChild(child.render());
+                } else if (typeof child == 'object') {
+                    that.elem.appendChild(child);
+                } else if (typeof child == 'string') {
+                    that.elem.appendChild(document.createTextNode(child));
+                } else {
+                    throw new Error("Неправильный тип потомка " + child);
+                }
+            });
+            if (this.cClassName) {
+                this.elem.className = this.cClassName;
+            }
+            for (var key in this.cAttributes) {
+                this.elem.setAttribute(key, this.cAttributes[key]);
+            }
+            for (var key in this.cOptions) {
+                this.elem[key] = this.cOptions[key];
+            }
+            return this.elem;
+        }
+        return false;
+    };
+    Container.prototype.remove = function () {
+        if (this.elem) {
+            if (this.elem.parentNode) {
+                this.elem.parentNode.removeChild(this.elem);
+            }
+            this.elem = null;
+        }
+    };
+    
+    function closePopUp(popUp) {
+        return function () {
+            event.preventDefault();
+            popUp.remove();
+        }
+    }
+    function writePopUp(sources) {
+        return function () {
+            var popUp = new Container('div', [], 'popup');
+            var popUpImg = new Container('img', [], 'popup__img',
+                {"src": "img/" + sources.bigImg, "alt": "Обои"});
+            var popUpClose = new Container('button', ["Закрыть"], 'popup__close',
+                {}, {"onclick": closePopUp(popUp)});
+            popUp.cChildren = [popUpImg, popUpClose];
+            popUp.cOptions = {"onclick": closePopUp(popUp)};
+            document.getElementsByTagName('body')[0].appendChild(popUp.render());
+        }
+    }
+    //Обработка AJAX-запроса
     function writeImg(result) {
         JSON.parse(result.responseText).forEach(function (sources) {
-            var writeImg = document.createElement('img');
-            writeImg.className = 'gallery__img'
-            writeImg.setAttribute('src', 'img/' + sources.smallImg);
-            writeImg.setAttribute('alt', 'Миниатюра');
-            writeImg.onclick = function() {
-                event.preventDefault();
-                var popUpImg = document.createElement('img');
-                popUpImg.className = 'popup__img'
-                popUpImg.setAttribute('src', 'img/' + sources.bigImg)
-                popUpImg.setAttribute('alt', 'Обои');
-                var popUpClose = document.createElement('button');
-                popUpClose.className = 'popup__close';
-                popUpClose.innerHTML = 'Закрыть';
-                popUpClose.onclick = closePopUp;
-                var popUp = document.createElement('div');
-                popUp.appendChild(popUpImg);
-                popUp.appendChild(popUpClose);
-                popUp.className = 'popup';
-                popUp.onclick = closePopUp;
-                document.getElementsByTagName('body')[0].appendChild(popUp);
-            }
-            document.getElementsByClassName('gallery')[0].appendChild(writeImg);
+            var writeImg = new Container('img', [], 'gallery__img',
+                {"src": "img/" + sources.smallImg, "alt": "Миниатюра"},
+                {"onclick": writePopUp(sources)});
+            document.getElementsByClassName('gallery')[0].appendChild(writeImg.render());
         });
     }
     SendRequest('GET', 'files.json', 'time=' + new Date().getTime(), writeImg);
