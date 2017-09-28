@@ -16,7 +16,7 @@
             align-content:flex-start;
             display:flex;
         }
-        .gallery__a {
+        .gallery__img {
             display: block;
             max-width: 45%;
             flex-grow:0;
@@ -24,8 +24,8 @@
             box-sizing: border-box;
             padding: 10px;
         }
-        .gallery__img {
-            width: 100%;
+        .gallery__img:hover {
+           cursor: pointer;
         }
         .popup {
             height: 100%;
@@ -36,6 +36,9 @@
             top: 0;
             left: 0;
             text-align: center;
+        }
+        .popup:hover {
+           cursor: pointer;
         }
         .popup__img {
             max-height: 95%;
@@ -48,7 +51,9 @@
             position: fixed;
             top: 2px;
             right: 2px;
-            
+        }
+        .popup__close:hover {
+           cursor: pointer;
         }
     </style>
 </head>

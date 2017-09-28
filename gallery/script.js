@@ -55,14 +55,11 @@ window.onload = function() {
     }
     function writeImg(result) {
         JSON.parse(result.responseText).forEach(function (sources) {
-            var writeImg = document.createElement('img'),
-                writeA = document.createElement('a');
+            var writeImg = document.createElement('img');
             writeImg.className = 'gallery__img'
             writeImg.setAttribute('src', 'img/' + sources.smallImg);
             writeImg.setAttribute('alt', 'Миниатюра');
-            writeA.appendChild(writeImg);
-            writeA.className = 'gallery__a';
-            writeA.onclick = function() {
+            writeImg.onclick = function() {
                 event.preventDefault();
                 var popUpImg = document.createElement('img');
                 popUpImg.className = 'popup__img'
@@ -79,7 +76,7 @@ window.onload = function() {
                 popUp.onclick = closePopUp;
                 document.getElementsByTagName('body')[0].appendChild(popUp);
             }
-            document.getElementsByClassName('gallery')[0].appendChild(writeA);
+            document.getElementsByClassName('gallery')[0].appendChild(writeImg);
         });
     }
     SendRequest('GET', 'files.json', 'time=' + new Date().getTime(), writeImg);
