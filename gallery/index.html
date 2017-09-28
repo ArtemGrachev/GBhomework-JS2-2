@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Галлерея обоев с красивыми пейзажами</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+        .gallery {
+            width: 100%;
+            flex-direction:row;
+            flex-wrap:wrap;
+            justify-content:space-around;
+            align-items:flex-start;
+            align-content:flex-start;
+            display:flex;
+        }
+        .gallery__a {
+            display: block;
+            max-width: 45%;
+            flex-grow:0;
+            flex-shrink:0;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+        .gallery__img {
+            width: 100%;
+        }
+        .popup {
+            height: 100%;
+            background:url(img/popupBG.png);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            text-align: center;
+        }
+        .popup__img {
+            max-height: 95%;
+            max-width: 95%;
+            padding: 2.5%;
+            opacity: 1;
+            display: inline-block;
+        }
+        .popup__close {
+            position: fixed;
+            top: 2px;
+            right: 2px;
+            
+        }
+    </style>
+</head>
+<body>
+    <h1>Галлерея обоев с красивыми пейзажами</h1>
+    <div class="gallery"></div>
+<script src="script.js"></script>
+</body>
+</html>
